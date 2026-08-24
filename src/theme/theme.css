@@ -1,0 +1,98 @@
+/**
+ * Mapping dei token semantici (usati da shadcn/ui e dai componenti) sulla
+ * palette di marca in tokens.css. Chiaro e scuro sono varianti delle stesse
+ * variabili: nessun componente conosce i colori di marca, solo questi ruoli.
+ * Le superfici (card, popover, secondary, muted) sono ottenute mescolando
+ * bianco/nero con color-mix, non con nuove tinte, per restare fedeli alla
+ * palette e all'estetica "no gradienti / alto contrasto".
+ */
+
+:root {
+  --background: var(--brand-white);
+  --foreground: var(--brand-black);
+
+  --card: color-mix(in oklab, var(--brand-white), var(--brand-black) 4%);
+  --card-foreground: var(--brand-black);
+  --popover: var(--brand-white);
+  --popover-foreground: var(--brand-black);
+
+  --primary: var(--brand-bumblebee);
+  --primary-foreground: var(--brand-black);
+
+  --secondary: color-mix(in oklab, var(--brand-white), var(--brand-black) 8%);
+  --secondary-foreground: var(--brand-black);
+
+  --muted: color-mix(in oklab, var(--brand-white), var(--brand-black) 6%);
+  --muted-foreground: var(--brand-gray);
+
+  --accent: var(--brand-sunflower);
+  --accent-foreground: var(--brand-black);
+
+  --destructive: var(--brand-tuscany);
+  --destructive-foreground: var(--brand-white);
+
+  --border: color-mix(in oklab, var(--brand-black), transparent 88%);
+  --input: color-mix(in oklab, var(--brand-black), transparent 82%);
+  --ring: var(--brand-bumblebee);
+
+  --chart-1: var(--brand-bumblebee);
+  --chart-2: var(--brand-tuscany);
+  --chart-3: var(--brand-sunflower);
+  --chart-4: var(--brand-gray);
+  --chart-5: var(--brand-black);
+
+  --sidebar: color-mix(in oklab, var(--brand-white), var(--brand-black) 4%);
+  --sidebar-foreground: var(--brand-black);
+  --sidebar-primary: var(--brand-bumblebee);
+  --sidebar-primary-foreground: var(--brand-black);
+  --sidebar-accent: var(--brand-sunflower);
+  --sidebar-accent-foreground: var(--brand-black);
+  --sidebar-border: color-mix(in oklab, var(--brand-black), transparent 88%);
+  --sidebar-ring: var(--brand-bumblebee);
+
+  --radius: 0.25rem;
+}
+
+.dark {
+  --background: var(--brand-black);
+  --foreground: var(--brand-white);
+
+  --card: color-mix(in oklab, var(--brand-black), var(--brand-white) 6%);
+  --card-foreground: var(--brand-white);
+  --popover: color-mix(in oklab, var(--brand-black), var(--brand-white) 6%);
+  --popover-foreground: var(--brand-white);
+
+  --primary: var(--brand-bumblebee);
+  --primary-foreground: var(--brand-black);
+
+  --secondary: color-mix(in oklab, var(--brand-black), var(--brand-white) 12%);
+  --secondary-foreground: var(--brand-white);
+
+  --muted: color-mix(in oklab, var(--brand-black), var(--brand-white) 10%);
+  --muted-foreground: var(--brand-gray);
+
+  --accent: var(--brand-sunflower);
+  --accent-foreground: var(--brand-black);
+
+  --destructive: var(--brand-tuscany);
+  --destructive-foreground: var(--brand-black);
+
+  --border: color-mix(in oklab, var(--brand-white), transparent 88%);
+  --input: color-mix(in oklab, var(--brand-white), transparent 82%);
+  --ring: var(--brand-bumblebee);
+
+  --chart-1: var(--brand-bumblebee);
+  --chart-2: var(--brand-tuscany);
+  --chart-3: var(--brand-sunflower);
+  --chart-4: var(--brand-gray);
+  --chart-5: var(--brand-white);
+
+  --sidebar: color-mix(in oklab, var(--brand-black), var(--brand-white) 6%);
+  --sidebar-foreground: var(--brand-white);
+  --sidebar-primary: var(--brand-bumblebee);
+  --sidebar-primary-foreground: var(--brand-black);
+  --sidebar-accent: var(--brand-sunflower);
+  --sidebar-accent-foreground: var(--brand-black);
+  --sidebar-border: color-mix(in oklab, var(--brand-white), transparent 88%);
+  --sidebar-ring: var(--brand-bumblebee);
+}

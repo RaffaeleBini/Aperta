@@ -1,0 +1,14 @@
+/**
+ * Palette grezza di marca (skin "RB"). Nomi brand-agnostici: nessun componente
+ * deve referenziare queste variabili direttamente, solo tramite i token
+ * semantici definiti in theme.css. Per applicare un'altra marca in futuro
+ * basta sostituire questo file (e i font in fonts.ts).
+ */
+:root {
+  --brand-black: #0b0b0b;
+  --brand-bumblebee: #f2c230;
+  --brand-sunflower: #f7ca18;
+  --brand-tuscany: #c4873c;
+  --brand-white: #ffffff;
+  --brand-gray: #969690;
+}

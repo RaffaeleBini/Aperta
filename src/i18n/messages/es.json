@@ -1,0 +1,80 @@
+{
+  "common": {
+    "appName": "Aperta"
+  },
+  "nav": {
+    "datasets": "Datasets"
+  },
+  "theme": {
+    "toggle": "Cambiar tema",
+    "light": "Claro",
+    "dark": "Oscuro"
+  },
+  "locale": {
+    "label": "Idioma",
+    "es": "Español",
+    "gl": "Galego",
+    "it": "Italiano"
+  },
+  "home": {
+    "title": "Aperta",
+    "subtitle": "Plataforma de analítica de datos abiertos"
+  },
+  "datasets": {
+    "importTitle": "Importar dataset",
+    "yourDatasets": "Tus datasets",
+    "noDatasets": "Todavía no se ha importado ningún dataset.",
+    "rowsAndColumns": "{rows} filas · {columns} columnas",
+    "tabs": {
+      "file": "Fichero local",
+      "generic": "API genérica",
+      "eurostat": "Eurostat"
+    },
+    "detail": {
+      "quality": "Calidad de datos",
+      "table": "Tabla",
+      "duplicates": "{count} filas duplicadas (≈)"
+    },
+    "table": {
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page} de {total} — {rows} filas",
+      "loading": "Cargando…"
+    },
+    "profile": {
+      "nulls": "Nulos",
+      "empty": "Vacíos",
+      "distinct": "Únicos (≈)",
+      "minMax": "Mín / Máx",
+      "avg": "Media",
+      "median": "Mediana",
+      "topCategories": "Categorías más frecuentes",
+      "alerts": {
+        "many_nulls": "Muchos nulos",
+        "inconsistent_type_numeric": "Tipo posiblemente inconsistente"
+      }
+    }
+  },
+  "connectors": {
+    "preview": "Vista previa",
+    "previewing": "Cargando…",
+    "import": "Importar",
+    "importing": "Importando…",
+    "previewSummary": "Vista previa de las primeras {shown} filas de {total} en total.",
+    "file": {
+      "fileLabel": "Fichero (CSV, JSON o Excel)",
+      "nameLabel": "Nombre del dataset"
+    },
+    "generic": {
+      "urlLabel": "URL (JSON o CSV)",
+      "nameLabel": "Nombre del dataset"
+    },
+    "eurostat": {
+      "codeLabel": "Código de dataset Eurostat",
+      "codeHint": "Busca el código en el Data Browser de Eurostat.",
+      "geoLabel": "Geo (opcional, separados por coma)",
+      "timeLabel": "Desde el periodo (opcional)",
+      "nameLabel": "Nombre del dataset"
+    }
+  }
+}
