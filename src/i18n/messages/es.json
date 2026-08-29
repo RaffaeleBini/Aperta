@@ -33,6 +33,7 @@
     "detail": {
       "quality": "Calidad de datos",
       "table": "Tabla",
+      "charts": "Gráficos",
       "duplicates": "{count} filas duplicadas (≈)"
     },
     "table": {
@@ -75,6 +76,73 @@
       "geoLabel": "Geo (opcional, separados por coma)",
       "timeLabel": "Desde el periodo (opcional)",
       "nameLabel": "Nombre del dataset"
+    }
+  },
+  "charts": {
+    "newChart": "Nuevo gráfico",
+    "noCharts": "Todavía no se ha creado ningún gráfico.",
+    "builder": {
+      "fields": "Campos",
+      "dimensions": "Dimensiones",
+      "measures": "Medidas",
+      "types": {
+        "bar": "Barras",
+        "line": "Líneas",
+        "area": "Área",
+        "scatter": "Dispersión",
+        "pie": "Tarta / donut",
+        "heatmap": "Mapa de calor"
+      },
+      "shelves": {
+        "x": "Eje X",
+        "y": "Eje Y",
+        "color": "Color",
+        "size": "Tamaño",
+        "group": "Detalle",
+        "filters": "Filtros"
+      },
+      "aggregation": {
+        "sum": "Suma",
+        "avg": "Media",
+        "count": "Conteo",
+        "count_distinct": "Conteo distinto",
+        "min": "Mínimo",
+        "max": "Máximo"
+      },
+      "dropHint": "Arrastra un campo aquí",
+      "assignTo": "Asignar a…",
+      "emptyState": "Configura los campos obligatorios para ver el gráfico",
+      "save": "Guardar gráfico",
+      "chartName": "Nombre del gráfico",
+      "saved": "Gráfico guardado",
+      "deleteConfirm": "¿Eliminar este gráfico?",
+      "typeChangedWarning": "Se han quitado {count} campos no compatibles con el nuevo tipo de gráfico",
+      "errors": {
+        "invalidField": "Campo no válido para este dataset",
+        "missingRequired": "Faltan campos obligatorios en {shelf}",
+        "loadError": "No se pudo cargar la vista previa",
+        "shelfFull": "\"{shelf}\" ya tiene el máximo de campos permitido",
+        "heatmapTooLarge": "Demasiadas categorías para mostrar el mapa de calor — añade más filtros."
+      },
+      "filters": {
+        "addFilter": "Añadir filtro",
+        "field": "Campo",
+        "operator": "Operador",
+        "value": "Valor",
+        "operators": {
+          "eq": "Igual a",
+          "neq": "Distinto de",
+          "gt": "Mayor que",
+          "gte": "Mayor o igual que",
+          "lt": "Menor que",
+          "lte": "Menor o igual que",
+          "between": "Entre",
+          "in": "Está en",
+          "not_in": "No está en",
+          "is_null": "Es nulo",
+          "is_not_null": "No es nulo"
+        }
+      }
     }
   }
 }

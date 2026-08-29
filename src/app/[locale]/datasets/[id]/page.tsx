@@ -4,6 +4,7 @@ import { getDataset } from "@/lib/duckdb/datasets";
 import { profileDataset } from "@/lib/profiling/queries";
 import { ColumnSummaryCard } from "@/components/data-profile/column-summary-card";
 import { DatasetTable } from "@/components/data-profile/dataset-table";
+import { ChartList } from "@/components/charts/chart-list";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -50,6 +51,7 @@ export default async function DatasetDetailPage({
         <TabsList>
           <TabsTrigger value="profile">{t("detail.quality")}</TabsTrigger>
           <TabsTrigger value="table">{t("detail.table")}</TabsTrigger>
+          <TabsTrigger value="charts">{t("detail.charts")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -62,6 +64,10 @@ export default async function DatasetDetailPage({
 
         <TabsContent value="table">
           <DatasetTable datasetId={dataset.id} columns={columnNames} />
+        </TabsContent>
+
+        <TabsContent value="charts">
+          <ChartList datasetId={dataset.id} />
         </TabsContent>
       </Tabs>
     </div>

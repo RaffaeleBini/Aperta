@@ -1,4 +1,5 @@
 import { query } from "../duckdb/client";
+import { isNumericType, isVarcharType } from "../duckdb/types";
 
 const NULL_RATIO_ALERT_THRESHOLD = 0.2;
 const NUMERIC_LIKE_ALERT_THRESHOLD = 0.9;
@@ -22,29 +23,6 @@ export interface DatasetProfile {
   rowCount: number;
   duplicateRowCount: number;
   columns: ColumnProfile[];
-}
-
-const NUMERIC_TYPES = new Set([
-  "TINYINT",
-  "SMALLINT",
-  "INTEGER",
-  "BIGINT",
-  "HUGEINT",
-  "UTINYINT",
-  "USMALLINT",
-  "UINTEGER",
-  "UBIGINT",
-  "FLOAT",
-  "DOUBLE",
-  "DECIMAL",
-]);
-
-function isNumericType(type: string): boolean {
-  return NUMERIC_TYPES.has(type.split("(")[0].toUpperCase());
-}
-
-function isVarcharType(type: string): boolean {
-  return type.toUpperCase().startsWith("VARCHAR");
 }
 
 async function profileColumn(
