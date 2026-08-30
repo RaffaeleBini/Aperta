@@ -1,21 +1,12 @@
+import type { AggFn } from "../sql/aggregations";
+import type { SqlFilter } from "../sql/filters";
+
+export type { AggFn } from "../sql/aggregations";
+export type { FilterOp } from "../sql/filters";
+
 export type ChartType = "bar" | "line" | "area" | "scatter" | "pie" | "heatmap";
 
-export type AggFn = "sum" | "avg" | "count" | "count_distinct" | "min" | "max";
-
 export type DateGranularity = "year" | "quarter" | "month" | "day";
-
-export type FilterOp =
-  | "eq"
-  | "neq"
-  | "gt"
-  | "gte"
-  | "lt"
-  | "lte"
-  | "between"
-  | "in"
-  | "not_in"
-  | "is_null"
-  | "is_not_null";
 
 export interface ShelfField {
   field: string;
@@ -24,11 +15,7 @@ export interface ShelfField {
   dateGranularity?: DateGranularity;
 }
 
-export interface ChartFilter {
-  field: string;
-  op: FilterOp;
-  value?: string | number | (string | number)[];
-}
+export type ChartFilter = SqlFilter;
 
 export type ShelfName = "x" | "y" | "color" | "size" | "group";
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDataset } from "@/lib/duckdb/datasets";
+import { effectiveTableName, getDataset } from "@/lib/duckdb/datasets";
 import { profileDataset } from "@/lib/profiling/queries";
 
 export async function GET(
@@ -14,7 +14,7 @@ export async function GET(
   }
 
   const profile = await profileDataset(
-    dataset.table_name,
+    effectiveTableName(dataset),
     dataset.schema_json,
     dataset.row_count
   );

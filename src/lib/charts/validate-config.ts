@@ -1,24 +1,14 @@
 import { isNumericType } from "../duckdb/types";
 import { isTemporalField } from "./field-kind";
 import { CHART_TYPE_SHELVES, CHART_TYPES } from "./chart-types";
+import { AGG_FUNCTIONS as AGG_FUNCTIONS_LIST } from "../sql/aggregations";
+import { FILTER_OPS as FILTER_OPS_LIST } from "../sql/filters";
 import type { ChartConfig, ShelfName } from "./types";
 
-const AGG_FUNCTIONS = new Set(["sum", "avg", "count", "count_distinct", "min", "max"]);
+const AGG_FUNCTIONS = new Set<string>(AGG_FUNCTIONS_LIST);
 const NUMERIC_ONLY_AGG = new Set(["sum", "avg"]);
 const DATE_GRANULARITIES = new Set(["year", "quarter", "month", "day"]);
-const FILTER_OPS = new Set([
-  "eq",
-  "neq",
-  "gt",
-  "gte",
-  "lt",
-  "lte",
-  "between",
-  "in",
-  "not_in",
-  "is_null",
-  "is_not_null",
-]);
+const FILTER_OPS = new Set<string>(FILTER_OPS_LIST);
 
 export interface ValidationError {
   path: string;

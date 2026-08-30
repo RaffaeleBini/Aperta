@@ -1,11 +1,15 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { getDataset } from "@/lib/duckdb/datasets";
+import { Link } from "@/i18n/navigation";
+import { effectiveTableName, getDataset } from "@/lib/duckdb/datasets";
 import { profileDataset } from "@/lib/profiling/queries";
+import { listSteps, toTransformStep } from "@/lib/transformations/transformations";
+import { summarizeStep } from "@/lib/transformations/step-summary";
 import { ColumnSummaryCard } from "@/components/data-profile/column-summary-card";
 import { DatasetTable } from "@/components/data-profile/dataset-table";
 import { ChartList } from "@/components/charts/chart-list";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function DatasetDetailPage({
@@ -20,9 +24,15 @@ export default async function DatasetDetailPage({
     notFound();
   }
 
-  const profile = await profileDataset(dataset.table_name, dataset.schema_json, dataset.row_count);
+  const profile = await profileDataset(
+    effectiveTableName(dataset),
+    dataset.schema_json,
+    dataset.row_count
+  );
   const columnNames = dataset.schema_json.map((c) => c.name);
+  const steps = await listSteps(id);
   const t = await getTranslations("datasets");
+  const tTransform = await getTranslations("transform");
 
   return (
     <div className="flex flex-col gap-4 p-6">
@@ -52,6 +62,7 @@ export default async function DatasetDetailPage({
           <TabsTrigger value="profile">{t("detail.quality")}</TabsTrigger>
           <TabsTrigger value="table">{t("detail.table")}</TabsTrigger>
           <TabsTrigger value="charts">{t("detail.charts")}</TabsTrigger>
+          <TabsTrigger value="transform">{t("detail.transform")}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -68,6 +79,28 @@ export default async function DatasetDetailPage({
 
         <TabsContent value="charts">
           <ChartList datasetId={dataset.id} />
+        </TabsContent>
+
+        <TabsContent value="transform">
+          <div className="flex flex-col gap-3">
+            <Button asChild className="w-fit">
+              <Link href={`/datasets/${dataset.id}/transform`}>{tTransform("openBuilder")}</Link>
+            </Button>
+            {steps.length === 0 ? (
+              <p className="text-sm text-muted-foreground">{tTransform("noSteps")}</p>
+            ) : (
+              <ol className="flex flex-col gap-1.5 text-sm">
+                {steps.map((step, i) => {
+                  const summary = summarizeStep(toTransformStep(step));
+                  return (
+                    <li key={step.id} className="text-muted-foreground">
+                      {i + 1}. {tTransform(`summary.${summary.key}`, summary.values)}
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

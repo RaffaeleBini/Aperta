@@ -34,6 +34,7 @@
       "quality": "Calidad de datos",
       "table": "Tabla",
       "charts": "Gráficos",
+      "transform": "Transformar",
       "duplicates": "{count} filas duplicadas (≈)"
     },
     "table": {
@@ -142,6 +143,112 @@
           "is_null": "Es nulo",
           "is_not_null": "No es nulo"
         }
+      }
+    }
+  },
+  "transform": {
+    "openBuilder": "Transformar datos",
+    "noSteps": "Todavía no se ha aplicado ningún paso.",
+    "addStep": "Añadir paso",
+    "save": "Añadir",
+    "saving": "Guardando…",
+    "stepSaved": "Paso guardado",
+    "deleteConfirm": "¿Eliminar este paso?",
+    "previewLoading": "Configurando vista previa…",
+    "previewSummary": "Vista previa de las primeras {shown} filas de {total} en total.",
+    "stepTypes": {
+      "rename_column": "Renombrar columna",
+      "drop_column": "Eliminar columna",
+      "change_type": "Cambiar tipo",
+      "filter_rows": "Filtrar filas",
+      "calculated_column": "Columna calculada",
+      "group_by": "Agrupar y agregar",
+      "join": "Unir con otro dataset",
+      "split_column": "Dividir columna",
+      "combine_columns": "Combinar columnas",
+      "fill_nulls": "Rellenar nulos",
+      "drop_nulls": "Eliminar filas con nulos"
+    },
+    "summary": {
+      "rename_column": "Renombrar \"{column}\" → \"{newName}\"",
+      "drop_column": "Eliminar columna \"{column}\"",
+      "change_type": "Cambiar tipo de \"{column}\" a {newType}",
+      "filter_rows": "Filtrar filas ({count} condición/es)",
+      "calculated_column": "Columna calculada \"{name}\"",
+      "group_by": "Agrupar por {columns}",
+      "join": "Unir con otro dataset",
+      "split_column": "Dividir \"{column}\"",
+      "combine_columns": "Combinar columnas → \"{outputName}\"",
+      "fill_nulls": "Rellenar nulos en \"{column}\"",
+      "drop_nulls": "Eliminar filas con nulos en {columns}"
+    },
+    "errors": {
+      "invalidStep": "El paso no es válido",
+      "loadError": "No se pudo cargar la vista previa",
+      "deleteFailed": "No se pudo eliminar el paso",
+      "reorderFailed": "No se pudo reordenar (algún paso posterior depende de este orden)"
+    },
+    "editors": {
+      "renameColumn": {
+        "column": "Columna",
+        "newName": "Nuevo nombre"
+      },
+      "dropColumn": {
+        "column": "Columna"
+      },
+      "changeType": {
+        "column": "Columna",
+        "newType": "Nuevo tipo"
+      },
+      "calculatedColumn": {
+        "name": "Nombre de la columna",
+        "expression": "Expresión",
+        "hint": "Expresión SQL de DuckDB, p. ej. precio * cantidad, UPPER(nombre)."
+      },
+      "groupBy": {
+        "groupColumns": "Agrupar por",
+        "aggregations": "Agregaciones",
+        "outputName": "Nombre de salida",
+        "addAggregation": "Añadir agregación"
+      },
+      "join": {
+        "otherDataset": "Otro dataset",
+        "joinType": "Tipo de unión",
+        "onLeft": "Columna de este dataset",
+        "onRight": "Columna del otro dataset",
+        "types": {
+          "inner": "Interna (inner)",
+          "left": "Izquierda (left)",
+          "right": "Derecha (right)",
+          "full": "Completa (full)"
+        }
+      },
+      "splitColumn": {
+        "column": "Columna",
+        "delimiter": "Delimitador",
+        "outputNames": "Columnas de salida",
+        "addOutput": "Añadir columna"
+      },
+      "combineColumns": {
+        "columns": "Columnas",
+        "separator": "Separador",
+        "outputName": "Nombre de salida",
+        "dropOriginals": "Eliminar columnas originales"
+      },
+      "fillNulls": {
+        "column": "Columna",
+        "strategy": "Estrategia",
+        "value": "Valor",
+        "strategies": {
+          "value": "Valor fijo",
+          "mean": "Media",
+          "median": "Mediana",
+          "mode": "Moda",
+          "zero": "Cero"
+        }
+      },
+      "dropNulls": {
+        "columns": "Columnas"
       }
     }
   }

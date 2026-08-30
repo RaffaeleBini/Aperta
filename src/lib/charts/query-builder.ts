@@ -1,15 +1,8 @@
 import type { DuckDBValue } from "@duckdb/node-api";
 import { CHART_TYPE_SHELVES } from "./chart-types";
-import type { AggFn, ChartConfig, ChartFilter, ShelfName } from "./types";
-
-const AGG_SQL: Record<AggFn, (col: string) => string> = {
-  sum: (c) => `sum(${c})`,
-  avg: (c) => `avg(${c})`,
-  count: (c) => `count(${c})`,
-  count_distinct: (c) => `count(DISTINCT ${c})`,
-  min: (c) => `min(${c})`,
-  max: (c) => `max(${c})`,
-};
+import type { ChartConfig, ShelfName } from "./types";
+import { AGG_SQL } from "../sql/aggregations";
+import { buildFilterClause } from "../sql/filters";
 
 const DATE_GRANULARITIES = new Set(["year", "quarter", "month", "day"]);
 
@@ -30,58 +23,6 @@ function dimensionExpr(field: string, dateGranularity?: string): string {
     throw new Error(`Granularidad de fecha no soportada: ${dateGranularity}`);
   }
   return `date_trunc('${dateGranularity}', ${col})`;
-}
-
-function buildFilterClause(
-  filter: ChartFilter,
-  index: number,
-  params: Record<string, DuckDBValue>
-): string {
-  const col = `"${filter.field}"`;
-  const paramKey = (suffix = "") => `f${index}${suffix}`;
-
-  switch (filter.op) {
-    case "eq":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} = $${paramKey()}`;
-    case "neq":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} != $${paramKey()}`;
-    case "gt":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} > $${paramKey()}`;
-    case "gte":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} >= $${paramKey()}`;
-    case "lt":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} < $${paramKey()}`;
-    case "lte":
-      params[paramKey()] = filter.value as DuckDBValue;
-      return `${col} <= $${paramKey()}`;
-    case "between": {
-      const [lo, hi] = filter.value as [DuckDBValue, DuckDBValue];
-      params[paramKey("a")] = lo;
-      params[paramKey("b")] = hi;
-      return `${col} BETWEEN $${paramKey("a")} AND $${paramKey("b")}`;
-    }
-    case "in":
-    case "not_in": {
-      const values = filter.value as DuckDBValue[];
-      const placeholders = values.map((v, i) => {
-        const key = paramKey(`_${i}`);
-        params[key] = v;
-        return `$${key}`;
-      });
-      return `${col} ${filter.op === "in" ? "IN" : "NOT IN"} (${placeholders.join(", ")})`;
-    }
-    case "is_null":
-      return `${col} IS NULL`;
-    case "is_not_null":
-      return `${col} IS NOT NULL`;
-    default:
-      throw new Error(`Operador de filtro no soportado: ${filter.op}`);
-  }
 }
 
 export interface BuiltChartQuery {
@@ -120,7 +61,7 @@ export function buildChartQuery(
   }
 
   const params: Record<string, DuckDBValue> = {};
-  const whereClauses = config.filters.map((filter, i) => buildFilterClause(filter, i, params));
+  const whereClauses = config.filters.map((filter, i) => buildFilterClause(filter, `f${i}`, params));
   const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
   const limit = Math.min(

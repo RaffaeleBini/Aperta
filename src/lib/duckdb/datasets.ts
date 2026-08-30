@@ -8,12 +8,23 @@ export interface DatasetRecord {
   source_type: string;
   data_source_id: string | null;
   table_name: string;
+  working_table_name: string | null;
   row_count: number;
   column_count: number;
   schema_json: IngestColumn[];
   raw_origin_json: Record<string, unknown> | null;
   imported_at: string;
   updated_at: string;
+}
+
+/**
+ * Tabla física a usar para consultar el dataset "tal como está ahora mismo":
+ * la tabla de trabajo regenerada por transformaciones si existe, si no la
+ * tabla de import original. `table_name` en sí NUNCA cambia de significado —
+ * sigue siendo siempre la tabla inmutable creada en el import.
+ */
+export function effectiveTableName(dataset: DatasetRecord): string {
+  return dataset.working_table_name ?? dataset.table_name;
 }
 
 export interface CreateDatasetInput {
@@ -104,7 +115,7 @@ export async function getDatasetRows(
 
   const orderClause = sort ? `ORDER BY "${sort}" ${dir}` : "";
   const rows = await query(
-    `SELECT * FROM "${dataset.table_name}" ${orderClause} LIMIT ${pageSize} OFFSET ${offset}`
+    `SELECT * FROM "${effectiveTableName(dataset)}" ${orderClause} LIMIT ${pageSize} OFFSET ${offset}`
   );
 
   return { rows, page, pageSize, totalRows: dataset.row_count };

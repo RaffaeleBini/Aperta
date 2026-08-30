@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getDataset } from "@/lib/duckdb/datasets";
+import { effectiveTableName, getDataset } from "@/lib/duckdb/datasets";
 import { query } from "@/lib/duckdb/client";
 import { validateChartConfig } from "@/lib/charts/validate-config";
 import { buildChartQuery } from "@/lib/charts/query-builder";
@@ -26,7 +26,7 @@ export async function POST(
   }
 
   try {
-    const built = buildChartQuery(dataset.table_name, body.data);
+    const built = buildChartQuery(effectiveTableName(dataset), body.data);
     const rows = await query(built.sql, built.params);
     return NextResponse.json({ rows, columnMap: built.columnMap });
   } catch (err) {
