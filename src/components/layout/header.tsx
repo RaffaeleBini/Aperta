@@ -16,6 +16,9 @@ export function Header() {
         <Link href="/datasets" className="text-sm text-muted-foreground hover:text-foreground">
           {tNav("datasets")}
         </Link>
+        <Link href="/dashboards" className="text-sm text-muted-foreground hover:text-foreground">
+          {tNav("dashboards")}
+        </Link>
       </div>
       <div className="flex items-center gap-2">
         <LocaleSwitcher />

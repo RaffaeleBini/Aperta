@@ -8,13 +8,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ShelfName } from "@/lib/charts/types";
 
 export interface FieldChipProps {
   name: string;
   type: string;
-  applicableShelves: { shelf: ShelfName; label: string }[];
-  onAssign: (shelf: ShelfName) => void;
+  applicableShelves: { shelf: string; label: string }[];
+  onAssign: (shelf: string) => void;
   assignLabel: string;
 }
 
@@ -32,7 +31,7 @@ export function FieldChip({ name, type, applicableShelves, onAssign, assignLabel
     >
       <button
         type="button"
-        className="flex flex-1 items-center gap-1.5 cursor-grab touch-none text-left"
+        className="flex flex-1 min-w-0 items-center gap-1.5 cursor-grab touch-none text-left"
         {...listeners}
         {...attributes}
       >

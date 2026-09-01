@@ -3,7 +3,8 @@
     "appName": "Aperta"
   },
   "nav": {
-    "datasets": "Datasets"
+    "datasets": "Datasets",
+    "dashboards": "Dashboards"
   },
   "theme": {
     "toggle": "Cambiar tema",
@@ -34,6 +35,7 @@
       "quality": "Calidad de datos",
       "table": "Tabla",
       "charts": "Gráficos",
+      "pivots": "Tablas dinámicas",
       "transform": "Transformar",
       "duplicates": "{count} filas duplicadas (≈)"
     },
@@ -250,6 +252,67 @@
       "dropNulls": {
         "columns": "Columnas"
       }
+    }
+  },
+  "pivot": {
+    "newPivot": "Nueva tabla dinámica",
+    "noPivots": "Todavía no se ha creado ninguna tabla dinámica.",
+    "exportCsv": "Exportar CSV",
+    "previewSummary": "Vista previa de las primeras {shown} filas.",
+    "emptyResult": "La configuración actual no devuelve columnas.",
+    "builder": {
+      "fields": "Campos",
+      "dimensions": "Dimensiones",
+      "measures": "Medidas",
+      "assignTo": "Asignar a…",
+      "dropHint": "Arrastra un campo aquí",
+      "emptyState": "Configura al menos un campo de valores para ver la tabla",
+      "save": "Guardar tabla dinámica",
+      "pivotName": "Nombre de la tabla dinámica",
+      "saved": "Tabla dinámica guardada",
+      "deleteConfirm": "¿Eliminar esta tabla dinámica?",
+      "shelves": {
+        "rows": "Filas",
+        "columns": "Columnas",
+        "values": "Valores",
+        "filters": "Filtros"
+      },
+      "aggregation": {
+        "sum": "Suma",
+        "avg": "Media",
+        "count": "Conteo",
+        "count_distinct": "Conteo distinto",
+        "min": "Mínimo",
+        "max": "Máximo"
+      },
+      "errors": {
+        "shelfFull": "\"{shelf}\" ya tiene el máximo de campos permitido",
+        "loadError": "No se pudo cargar la vista previa"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Dashboards",
+    "newDashboard": "Nuevo dashboard",
+    "dashboardName": "Nombre del dashboard",
+    "noDashboards": "Todavía no se ha creado ningún dashboard.",
+    "addWidget": "Añadir widget",
+    "noWidgets": "Todavía no se ha añadido ningún widget a este dashboard.",
+    "noWidgetsAvailable": "No hay gráficos ni tablas dinámicas guardados todavía.",
+    "loadingWidget": "Cargando…",
+    "widgetMissing": "Este elemento ya no existe.",
+    "deleteConfirm": "¿Eliminar este elemento?",
+    "size": {
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande"
+    },
+    "errors": {
+      "addFailed": "No se pudo añadir el widget",
+      "updateFailed": "No se pudo actualizar el widget",
+      "removeFailed": "No se pudo eliminar el widget",
+      "reorderFailed": "No se pudo reordenar los widgets",
+      "createFailed": "No se pudo crear el dashboard"
     }
   }
 }

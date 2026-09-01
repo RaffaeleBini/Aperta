@@ -1,21 +1,20 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { FieldChip } from "./field-chip";
+import { FieldChip } from "@/components/drag-drop/field-chip";
 import { classifyField } from "@/lib/charts/field-kind";
-import { shelvesForType } from "@/lib/charts/chart-types";
-import type { ChartType, ShelfName } from "@/lib/charts/types";
+import { PIVOT_SHELF_ORDER } from "@/lib/pivot/pivot-shelves";
+import type { PivotShelfName } from "@/lib/pivot/types";
 
-export interface FieldListProps {
+export function PivotFieldList({
+  columns,
+  onAssign,
+}: {
   columns: { name: string; type: string }[];
-  chartType: ChartType;
-  onAssign: (field: string, shelf: ShelfName) => void;
-}
-
-export function FieldList({ columns, chartType, onAssign }: FieldListProps) {
-  const t = useTranslations("charts.builder");
-  const shelves = shelvesForType(chartType);
-  const applicableShelves = shelves.map((shelf) => ({ shelf, label: t(`shelves.${shelf}`) }));
+  onAssign: (field: string, shelf: PivotShelfName) => void;
+}) {
+  const t = useTranslations("pivot.builder");
+  const applicableShelves = PIVOT_SHELF_ORDER.map((shelf) => ({ shelf, label: t(`shelves.${shelf}`) }));
 
   const dimensions = columns.filter((c) => classifyField(c.type) === "dimension");
   const measures = columns.filter((c) => classifyField(c.type) === "measure");
@@ -31,7 +30,7 @@ export function FieldList({ columns, chartType, onAssign }: FieldListProps) {
               name={col.name}
               type={col.type}
               applicableShelves={applicableShelves}
-              onAssign={(shelf) => onAssign(col.name, shelf as ShelfName)}
+              onAssign={(shelf) => onAssign(col.name, shelf as PivotShelfName)}
               assignLabel={t("assignTo")}
             />
           ))}
@@ -46,7 +45,7 @@ export function FieldList({ columns, chartType, onAssign }: FieldListProps) {
               name={col.name}
               type={col.type}
               applicableShelves={applicableShelves}
-              onAssign={(shelf) => onAssign(col.name, shelf as ShelfName)}
+              onAssign={(shelf) => onAssign(col.name, shelf as PivotShelfName)}
               assignLabel={t("assignTo")}
             />
           ))}

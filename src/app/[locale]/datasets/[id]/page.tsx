@@ -8,6 +8,7 @@ import { summarizeStep } from "@/lib/transformations/step-summary";
 import { ColumnSummaryCard } from "@/components/data-profile/column-summary-card";
 import { DatasetTable } from "@/components/data-profile/dataset-table";
 import { ChartList } from "@/components/charts/chart-list";
+import { PivotList } from "@/components/pivot/pivot-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -62,6 +63,7 @@ export default async function DatasetDetailPage({
           <TabsTrigger value="profile">{t("detail.quality")}</TabsTrigger>
           <TabsTrigger value="table">{t("detail.table")}</TabsTrigger>
           <TabsTrigger value="charts">{t("detail.charts")}</TabsTrigger>
+          <TabsTrigger value="pivots">{t("detail.pivots")}</TabsTrigger>
           <TabsTrigger value="transform">{t("detail.transform")}</TabsTrigger>
         </TabsList>
 
@@ -79,6 +81,10 @@ export default async function DatasetDetailPage({
 
         <TabsContent value="charts">
           <ChartList datasetId={dataset.id} />
+        </TabsContent>
+
+        <TabsContent value="pivots">
+          <PivotList datasetId={dataset.id} />
         </TabsContent>
 
         <TabsContent value="transform">

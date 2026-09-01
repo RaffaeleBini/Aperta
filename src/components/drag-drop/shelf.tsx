@@ -2,7 +2,6 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
-import type { ShelfName } from "@/lib/charts/types";
 
 export function Shelf({
   shelf,
@@ -11,7 +10,7 @@ export function Shelf({
   children,
   isEmpty,
 }: {
-  shelf: ShelfName;
+  shelf: string;
   label: string;
   hint: string;
   children: React.ReactNode;
