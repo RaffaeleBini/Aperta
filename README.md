@@ -63,7 +63,7 @@ Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOp
 - [x] Sicurezza e gestione secret (RAILWAY_TOKEN come GitHub Secret, verificato mascherato nei log reali della Action)
 - [x] Pipeline CI (lint + build container ad ogni push)
 - [x] Pipeline CD e deploy pubblico su Railway
-- [~] Monitoraggio (Sentry verificato in produzione con un evento reale; UptimeRobot ancora da configurare)
+- [x] Monitoraggio (Sentry verificato in produzione con un evento reale; monitor UptimeRobot attivo sull'URL pubblica)
 - [ ] Presentazione finale (`docs/pipeline-devops.html`)
 
 Questa sezione viene aggiornata man mano che ogni fase si completa e si verifica realmente (non solo "dovrebbe funzionare").
@@ -111,4 +111,4 @@ Verificato con un evento reale, non solo "dovrebbe arrivare": chiamata `GET /api
 
 **Interpretare gli alert**: un'issue "Unhandled" in Sentry è un'eccezione non gestita da nessun try/catch — indica un bug reale da correggere, non un errore atteso (es. una validazione fallita che l'app già gestisce con una risposta 400 non genera un'issue). Il campo "Events" conta quante volte si è ripetuto; "Users" quanti utenti diversi lo hanno incontrato.
 
-**Uptime: UptimeRobot** — da configurare, monitorando `https://aperta-production.up.railway.app`.
+**Uptime: UptimeRobot** — monitor HTTP(s) attivo su `https://aperta-production.up.railway.app`. Un alert (email, o altri canali configurati nell'account) segnala quando il monitor rileva l'URL irraggiungibile o con un codice di errore per controlli consecutivi — a quel punto i primi posti da controllare sono i log di Railway (`railway logs`) e la dashboard di Sentry, per capire se è un crash dell'app (spesso già auto-recuperato dal meccanismo descritto sopra) o un problema di rete/piattaforma.
