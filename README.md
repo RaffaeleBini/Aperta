@@ -60,9 +60,9 @@ Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOp
 
 - [x] Esplorazione e pianificazione (questa sezione)
 - [x] Containerizzazione (Dockerfile, docker-compose, verifica avvio locale)
-- [~] Sicurezza e gestione secret (.env.example pronto; verifica "nessun secret nei log" si completa quando esisteranno secret reali, nei passi CD/Monitoraggio)
+- [x] Sicurezza e gestione secret (RAILWAY_TOKEN come GitHub Secret, verificato mascherato nei log reali della Action)
 - [x] Pipeline CI (lint + build container ad ogni push)
-- [ ] Pipeline CD e deploy pubblico su Railway
+- [x] Pipeline CD e deploy pubblico su Railway
 - [ ] Monitoraggio (Sentry + UptimeRobot)
 - [ ] Presentazione finale (`docs/pipeline-devops.html`)
 
@@ -82,10 +82,23 @@ Nota tecnica verificata con un run reale (non solo "dovrebbe funzionare"): `@duc
 
 ### Sicurezza e gestione secret
 
-Oggi l'app non richiede nessuna variabile d'ambiente per funzionare in locale — nessuna chiave API, nessuna credenziale. `.env.example` documenta comunque il formato per quelle che introdurranno i prossimi passi (Sentry). Verificato che nessun file `.env` sia mai stato committato nella storia del repository (`git log --all --diff-filter=A -- .env*`, nessun risultato). I secret legati al deploy/CI (token Railway, credenziali Sentry per l'upload delle sourcemap) non vivono in `.env` ma come **GitHub Actions Secrets** — mai nel repository, mascherati automaticamente nei log delle Action.
+Oggi l'app non richiede nessuna variabile d'ambiente per funzionare in locale — nessuna chiave API, nessuna credenziale. `.env.example` documenta comunque il formato per quelle che introdurranno i prossimi passi (Sentry). Verificato che nessun file `.env` sia mai stato committato nella storia del repository (`git log --all --diff-filter=A -- .env*`, nessun risultato). I secret legati al deploy/CI (token Railway, credenziali Sentry per l'upload delle sourcemap) non vivono in `.env` ma come **GitHub Actions Secrets** — mai nel repository. Verificato con un run reale: `RAILWAY_TOKEN` appare come `***` nel log della Action, mai in chiaro.
 
 ### Pipeline CI
 
 `.github/workflows/ci-cd.yml`, job `ci`: ad ogni push/PR su `main` — checkout, `npm ci`, lint (`--max-warnings=0`: la config di `eslint-config-next` marca la maggior parte delle regole come warning, non error — senza questo flag la pipeline passerebbe in verde anche con problemi di lint reali), build dell'immagine Docker.
 
 Verificato con un run reale, non solo "dovrebbe fallire": rotto di proposito un lint (`unusedTestVar` inutilizzato), push, pipeline fallita in rosso con l'annotazione sulla riga esatta ([run rosso](https://github.com/RaffaeleBini/Aperta/actions/runs/33653865703)); revertito, pipeline tornata verde ([run verde](https://github.com/RaffaeleBini/Aperta/actions/runs/33653945161)).
+
+### Pipeline CD e deploy pubblico
+
+**URL pubblica: https://aperta-production.up.railway.app**
+
+Job `deploy` nello stesso workflow, con `needs: ci` e condizione "push su `main`" (mai su PR) — installa il CLI di Railway e lancia `railway up` autenticato con `RAILWAY_TOKEN`. [Run verde completa CI→CD](https://github.com/RaffaeleBini/Aperta/actions/runs/33661806518).
+
+Due bug reali trovati e corretti verificando il deploy in produzione, non solo in locale:
+
+1. **Next.js standalone bind su hostname sbagliato.** Railway imposta la variabile d'ambiente `HOSTNAME` al nome del container (per identificarlo), ma `server.js` generato da `next build` la legge per decidere su quale indirizzo fare il bind (`process.env.HOSTNAME || '0.0.0.0'`) — risultato, il server ascoltava solo sull'hostname interno del container, irraggiungibile dal proxy pubblico di Railway (502 costante). Risolto impostando esplicitamente `HOSTNAME=0.0.0.0` come variabile del servizio Railway, sovrascrivendo quella automatica.
+2. **WAL di DuckDB non riprodotto dopo un riavvio del container.** Osservato dopo aver collegato il volume persistente: un redeploy lasciava un `.wal` che DuckDB rifiutava di rigiocare all'avvio (`Failure while replaying WAL file`, errore interno), mandando l'app in un ciclo di riavvio permanente. Corretto in due parti (`src/lib/duckdb/client.ts`): un handler su `SIGTERM`/`SIGINT` che fa un `CHECKPOINT` pulito prima di uscire (riduce drasticamente quando il problema si presenta), più un recupero automatico che elimina il `.wal` e riapre se capita comunque (si perdono solo le transazioni non ancora checkpointate, mai l'intero database). Verificato importando un dataset di test, forzando un redeploy reale, e confermando che i dati sopravvivono.
+
+Il volume persistente (`aperta-volume`, montato su `/app/data`) mantiene `data/aperta.duckdb` intatto tra un deploy e l'altro — è l'ambiente "production" definito più sopra.
