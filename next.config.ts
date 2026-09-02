@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { withSentryConfig } from "@sentry/nextjs/config";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -12,4 +13,9 @@ const nextConfig: NextConfig = {
   output: "standalone",
 };
 
-export default withNextIntl(nextConfig);
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: true,
+  // Upload delle sourcemap disabilitato finché non esiste un SENTRY_AUTH_TOKEN
+  // (richiede un progetto Sentry reale) — l'error tracking funziona comunque.
+  sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+});

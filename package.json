@@ -17,6 +17,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@duckdb/node-api": "1.5.5-r.4",
     "@hookform/resolvers": "^5.9.1",
+    "@sentry/nextjs": "^10.73.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "exceljs": "^4.4.0",
