@@ -64,7 +64,7 @@ Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOp
 - [x] Pipeline CI (lint + build container ad ogni push)
 - [x] Pipeline CD e deploy pubblico su Railway
 - [x] Monitoraggio (Sentry verificato in produzione con un evento reale; monitor UptimeRobot attivo sull'URL pubblica)
-- [ ] Presentazione finale (`docs/pipeline-devops.html`)
+- [x] Presentazione finale (`docs/pipeline-devops.html`, locale — non versionata, vedi sopra)
 
 Questa sezione viene aggiornata man mano che ogni fase si completa e si verifica realmente (non solo "dovrebbe funzionare").
 
