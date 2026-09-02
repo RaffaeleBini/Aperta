@@ -10,42 +10,43 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { PreviewTable } from "./preview-table";
 
 interface Preview {
-  columns: { name: string; type: string }[];
+  columns: string[];
   preview: Record<string, unknown>[];
   totalRows: number;
+  datasetLabel?: string;
 }
 
-export function GenericConnectorForm({
-  initialUrl = "",
-  initialName = "",
-}: {
-  initialUrl?: string;
-  initialName?: string;
-} = {}) {
+export function IneConnectorForm() {
   const router = useRouter();
   const t = useTranslations("connectors");
-  const tGeneric = useTranslations("connectors.generic");
-  const [url, setUrl] = useState(initialUrl);
-  const [name, setName] = useState(initialName);
+  const tIne = useTranslations("connectors.ine");
+  const [code, setCode] = useState("");
+  const [nult, setNult] = useState("");
+  const [name, setName] = useState("");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [loading, setLoading] = useState<"preview" | "import" | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  function buildParams() {
+    const nultNum = Number.parseInt(nult, 10);
+    return { code, nult: Number.isFinite(nultNum) && nultNum > 0 ? nultNum : undefined };
+  }
 
   async function handlePreview() {
     setLoading("preview");
     setError(null);
     setPreview(null);
     try {
-      const res = await fetch("/api/connectors/generic/preview", {
+      const res = await fetch("/api/connectors/ine/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify(buildParams()),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Errore durante l'anteprima.");
+      if (!res.ok) throw new Error(typeof json.error === "string" ? json.error : "Error durante la vista previa.");
       setPreview(json);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto.");
+      setError(err instanceof Error ? err.message : "Error desconocido.");
     } finally {
       setLoading(null);
     }
@@ -55,16 +56,16 @@ export function GenericConnectorForm({
     setLoading("import");
     setError(null);
     try {
-      const res = await fetch("/api/connectors/generic/import", {
+      const res = await fetch("/api/connectors/ine/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, name: name || url }),
+        body: JSON.stringify({ ...buildParams(), name: name || preview?.datasetLabel || code }),
       });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Errore durante l'import.");
+      if (!res.ok) throw new Error(typeof json.error === "string" ? json.error : "Error durante la importación.");
       router.push(`/datasets/${json.dataset.id}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto.");
+      setError(err instanceof Error ? err.message : "Error desconocido.");
     } finally {
       setLoading(null);
     }
@@ -73,23 +74,37 @@ export function GenericConnectorForm({
   return (
     <div className="flex flex-col gap-4 max-w-2xl">
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="generic-url">{tGeneric("urlLabel")}</Label>
+        <Label htmlFor="ine-code">{tIne("codeLabel")}</Label>
         <Input
-          id="generic-url"
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://…"
+          id="ine-code"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="ej. IPC251856 o 50902"
           required
         />
+        <p className="text-xs text-muted-foreground">{tIne("codeHint")}</p>
       </div>
+
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="generic-name">{tGeneric("nameLabel")}</Label>
+        <Label htmlFor="ine-nult">{tIne("nultLabel")}</Label>
         <Input
-          id="generic-name"
+          id="ine-nult"
+          type="number"
+          min={1}
+          value={nult}
+          onChange={(e) => setNult(e.target.value)}
+          placeholder="12"
+          className="max-w-32"
+        />
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="ine-name">{tIne("nameLabel")}</Label>
+        <Input
+          id="ine-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder={tGeneric("nameLabel")}
+          placeholder={preview?.datasetLabel ?? tIne("nameLabel")}
         />
       </div>
 
@@ -100,7 +115,7 @@ export function GenericConnectorForm({
       )}
 
       <div className="flex gap-2">
-        <Button type="button" variant="outline" onClick={handlePreview} disabled={!url || loading !== null}>
+        <Button type="button" variant="outline" onClick={handlePreview} disabled={!code || loading !== null}>
           {loading === "preview" ? t("previewing") : t("preview")}
         </Button>
         <Button type="button" onClick={handleImport} disabled={!preview || loading !== null}>
@@ -109,11 +124,7 @@ export function GenericConnectorForm({
       </div>
 
       {preview && (
-        <PreviewTable
-          columns={preview.columns.map((c) => c.name)}
-          rows={preview.preview}
-          totalRows={preview.totalRows}
-        />
+        <PreviewTable columns={preview.columns} rows={preview.preview} totalRows={preview.totalRows} />
       )}
     </div>
   );

@@ -26,10 +26,15 @@
     "yourDatasets": "Tus datasets",
     "noDatasets": "Todavía no se ha importado ningún dataset.",
     "rowsAndColumns": "{rows} filas · {columns} columnas",
+    "deleteConfirm": "¿Eliminar este dataset? Se borrarán también sus gráficos, tablas dinámicas y transformaciones.",
+    "deleteFailed": "No se pudo eliminar el dataset",
     "tabs": {
       "file": "Fichero local",
       "generic": "API genérica",
-      "eurostat": "Eurostat"
+      "eurostat": "Eurostat",
+      "ine": "INE",
+      "datosGobEs": "datos.gob.es",
+      "dataEuropaEu": "data.europa.eu"
     },
     "detail": {
       "quality": "Calidad de datos",
@@ -79,6 +84,24 @@
       "geoLabel": "Geo (opcional, separados por coma)",
       "timeLabel": "Desde el periodo (opcional)",
       "nameLabel": "Nombre del dataset"
+    },
+    "ine": {
+      "codeLabel": "Código de serie o tabla del INE",
+      "codeHint": "Código de serie (ej. IPC251856) o de tabla (ej. 50902) del banco de datos Tempus3.",
+      "nultLabel": "Últimos N periodos (opcional)",
+      "nameLabel": "Nombre del dataset"
+    },
+    "catalogSearch": {
+      "searchLabel": "Buscar en el catálogo",
+      "searchPlaceholder": "Palabra clave, ej. población",
+      "searchButton": "Buscar",
+      "searching": "Buscando…",
+      "searchError": "No se pudo realizar la búsqueda.",
+      "noResults": "No se han encontrado datasets para esa búsqueda.",
+      "chooseDataset": "Elige un dataset:",
+      "chooseResource": "Elige un recurso descargable (CSV o JSON):",
+      "noResources": "Este dataset no tiene recursos en CSV o JSON descargables directamente.",
+      "back": "Volver"
     }
   },
   "charts": {
@@ -120,12 +143,16 @@
       "saved": "Gráfico guardado",
       "deleteConfirm": "¿Eliminar este gráfico?",
       "typeChangedWarning": "Se han quitado {count} campos no compatibles con el nuevo tipo de gráfico",
+      "export": "Exportar",
+      "exportPng": "Exportar como PNG",
+      "exportPdf": "Exportar como PDF",
       "errors": {
         "invalidField": "Campo no válido para este dataset",
         "missingRequired": "Faltan campos obligatorios en {shelf}",
         "loadError": "No se pudo cargar la vista previa",
         "shelfFull": "\"{shelf}\" ya tiene el máximo de campos permitido",
-        "heatmapTooLarge": "Demasiadas categorías para mostrar el mapa de calor — añade más filtros."
+        "heatmapTooLarge": "Demasiadas categorías para mostrar el mapa de calor — añade más filtros.",
+        "exportFailed": "No se pudo exportar el gráfico"
       },
       "filters": {
         "addFilter": "Añadir filtro",

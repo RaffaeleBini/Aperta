@@ -26,3 +26,17 @@ export const eurostatImportSchema = eurostatSourceSchema.extend({
   name: z.string().min(1),
   description: z.string().optional(),
 });
+
+export const ineSourceSchema = z.object({
+  code: z.string().min(1),
+  nult: z.number().int().positive().optional(),
+});
+
+export const ineImportSchema = ineSourceSchema.extend({
+  name: z.string().min(1),
+  description: z.string().optional(),
+});
+
+export const catalogSearchSchema = z.object({
+  keyword: z.string().min(1),
+});

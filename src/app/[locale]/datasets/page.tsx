@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { FileUploadForm } from "@/components/connectors/file-upload-form";
 import { GenericConnectorForm } from "@/components/connectors/generic-connector-form";
 import { EurostatConnectorForm } from "@/components/connectors/eurostat-connector-form";
+import { IneConnectorForm } from "@/components/connectors/ine-connector-form";
+import { CatalogSearchConnectorForm } from "@/components/connectors/catalog-search-connector-form";
+import { DeleteDatasetButton } from "@/components/datasets/delete-dataset-button";
 
 export default async function DatasetsPage() {
   const datasets = await listDatasets();
@@ -20,6 +23,9 @@ export default async function DatasetsPage() {
             <TabsTrigger value="file">{t("tabs.file")}</TabsTrigger>
             <TabsTrigger value="generic">{t("tabs.generic")}</TabsTrigger>
             <TabsTrigger value="eurostat">{t("tabs.eurostat")}</TabsTrigger>
+            <TabsTrigger value="ine">{t("tabs.ine")}</TabsTrigger>
+            <TabsTrigger value="datosGobEs">{t("tabs.datosGobEs")}</TabsTrigger>
+            <TabsTrigger value="dataEuropaEu">{t("tabs.dataEuropaEu")}</TabsTrigger>
           </TabsList>
           <TabsContent value="file">
             <FileUploadForm />
@@ -29,6 +35,15 @@ export default async function DatasetsPage() {
           </TabsContent>
           <TabsContent value="eurostat">
             <EurostatConnectorForm />
+          </TabsContent>
+          <TabsContent value="ine">
+            <IneConnectorForm />
+          </TabsContent>
+          <TabsContent value="datosGobEs">
+            <CatalogSearchConnectorForm portal="datos-gob-es" />
+          </TabsContent>
+          <TabsContent value="dataEuropaEu">
+            <CatalogSearchConnectorForm portal="data-europa-eu" />
           </TabsContent>
         </Tabs>
       </section>
@@ -40,12 +55,11 @@ export default async function DatasetsPage() {
         ) : (
           <div className="flex flex-col gap-2">
             {datasets.map((dataset) => (
-              <Link
+              <div
                 key={dataset.id}
-                href={`/datasets/${dataset.id}`}
                 className="flex items-center justify-between rounded-md border p-3 hover:bg-accent/10"
               >
-                <div>
+                <Link href={`/datasets/${dataset.id}`} className="flex-1">
                   <p className="font-medium">{dataset.name}</p>
                   <p className="text-xs text-muted-foreground">
                     {t("rowsAndColumns", {
@@ -53,9 +67,12 @@ export default async function DatasetsPage() {
                       columns: dataset.column_count,
                     })}
                   </p>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">{dataset.source_type}</Badge>
+                  <DeleteDatasetButton datasetId={dataset.id} />
                 </div>
-                <Badge variant="secondary">{dataset.source_type}</Badge>
-              </Link>
+              </div>
             ))}
           </div>
         )}

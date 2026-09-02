@@ -90,6 +90,31 @@ export async function getDataset(id: string): Promise<DatasetRecord | null> {
   return rows[0] ? normalizeDataset(rows[0]) : null;
 }
 
+/**
+ * Borra un dataset y todo lo que existe únicamente por su causa: sus pasos de
+ * transformación, gráficos y tablas dinámicas (referencian dataset_id vía FK,
+ * así que deben borrarse antes que la fila de `datasets`), y sus tablas
+ * físicas (tabla de import original + tabla de trabajo si existe). Los
+ * widgets de dashboard que referencien un gráfico/pivot aquí borrado quedan
+ * huérfanos — ya gestionado por la UI del dashboard (Fase 4), mismo riesgo
+ * aceptado que borrar un gráfico suelto.
+ */
+export async function deleteDataset(id: string): Promise<void> {
+  const dataset = await getDataset(id);
+  if (!dataset) return;
+
+  const conn = await getConnection();
+  await conn.run(`DELETE FROM transformations WHERE dataset_id = $id`, { id });
+  await conn.run(`DELETE FROM charts WHERE dataset_id = $id`, { id });
+  await conn.run(`DELETE FROM pivots WHERE dataset_id = $id`, { id });
+  await conn.run(`DELETE FROM datasets WHERE id = $id`, { id });
+
+  if (dataset.working_table_name) {
+    await conn.run(`DROP TABLE IF EXISTS "${dataset.working_table_name}"`);
+  }
+  await conn.run(`DROP TABLE IF EXISTS "${dataset.table_name}"`);
+}
+
 const SORTABLE_DIRECTIONS = new Set(["asc", "desc"]);
 
 export interface PaginatedRows {

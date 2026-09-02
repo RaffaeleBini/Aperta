@@ -13,6 +13,14 @@ import { FilterPanel } from "./filter-panel";
 import { ChartCanvas } from "./chart-canvas";
 import { SaveChartDialog } from "./save-chart-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Download } from "lucide-react";
+import { downloadNodeAsPdf, downloadNodeAsPng } from "@/lib/export/capture";
 import { CHART_TYPE_SHELVES } from "@/lib/charts/chart-types";
 import { classifyField } from "@/lib/charts/field-kind";
 import { remapShelvesForType } from "@/lib/charts/chart-type-transition";
@@ -71,8 +79,10 @@ export function ChartBuilder({
     columnMap: BuiltChartQuery["columnMap"];
   } | null>(null);
   const [previewError, setPreviewError] = useState<string | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   const requestIdRef = useRef(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   const spec = CHART_TYPE_SHELVES[state.chartType];
   const isComplete = Object.entries(spec).every(
@@ -236,14 +246,45 @@ export function ChartBuilder({
     }
   }
 
+  async function handleExport(format: "png" | "pdf") {
+    if (!canvasRef.current) return;
+    setExporting(true);
+    try {
+      const filename = `${initialChart?.name || "grafico"}.${format}`;
+      if (format === "png") {
+        await downloadNodeAsPng(canvasRef.current, filename);
+      } else {
+        await downloadNodeAsPdf(canvasRef.current, filename);
+      }
+    } catch {
+      toast.error(t("errors.exportFailed"));
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <DndContextProvider onDragEnd={handleDragEnd}>
       <div className="flex flex-col gap-4 p-6 h-full">
         <div className="flex items-center justify-between">
           <ChartTypeSelector value={state.chartType} onChange={handleChartTypeChange} />
-          <Button onClick={() => setSaveOpen(true)} disabled={!isComplete}>
-            {t("save")}
-          </Button>
+          <div className="flex gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" disabled={!isComplete || !preview || exporting}>
+                  <Download className="size-4" />
+                  {t("export")}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => handleExport("png")}>{t("exportPng")}</DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleExport("pdf")}>{t("exportPdf")}</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button onClick={() => setSaveOpen(true)} disabled={!isComplete}>
+              {t("save")}
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-[220px_260px_1fr] gap-4 flex-1 min-h-0">
@@ -277,7 +318,7 @@ export function ChartBuilder({
             </div>
           </div>
 
-          <div className="rounded-md border p-4 min-h-80">
+          <div ref={canvasRef} className="rounded-md border p-4 min-h-80 bg-background">
             {isComplete && previewError ? (
               <p className="text-sm text-destructive">{previewError}</p>
             ) : (
