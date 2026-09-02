@@ -63,7 +63,7 @@ Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOp
 - [x] Sicurezza e gestione secret (RAILWAY_TOKEN come GitHub Secret, verificato mascherato nei log reali della Action)
 - [x] Pipeline CI (lint + build container ad ogni push)
 - [x] Pipeline CD e deploy pubblico su Railway
-- [ ] Monitoraggio (Sentry + UptimeRobot)
+- [~] Monitoraggio (Sentry verificato in produzione con un evento reale; UptimeRobot ancora da configurare)
 - [ ] Presentazione finale (`docs/pipeline-devops.html`)
 
 Questa sezione viene aggiornata man mano che ogni fase si completa e si verifica realmente (non solo "dovrebbe funzionare").
@@ -102,3 +102,13 @@ Due bug reali trovati e corretti verificando il deploy in produzione, non solo i
 2. **WAL di DuckDB non riprodotto dopo un riavvio del container.** Osservato dopo aver collegato il volume persistente: un redeploy lasciava un `.wal` che DuckDB rifiutava di rigiocare all'avvio (`Failure while replaying WAL file`, errore interno), mandando l'app in un ciclo di riavvio permanente. Corretto in due parti (`src/lib/duckdb/client.ts`): un handler su `SIGTERM`/`SIGINT` che fa un `CHECKPOINT` pulito prima di uscire (riduce drasticamente quando il problema si presenta), più un recupero automatico che elimina il `.wal` e riapre se capita comunque (si perdono solo le transazioni non ancora checkpointate, mai l'intero database). Verificato importando un dataset di test, forzando un redeploy reale, e confermando che i dati sopravvivono.
 
 Il volume persistente (`aperta-volume`, montato su `/app/data`) mantiene `data/aperta.duckdb` intatto tra un deploy e l'altro — è l'ambiente "production" definito più sopra.
+
+### Monitoraggio
+
+**Error tracking: Sentry** (`@sentry/nextjs`). Setup basato sugli `instrumentation.ts`/`instrumentation-client.ts` di Next.js (il pattern attuale per l'App Router, non i vecchi `sentry.*.config.js`) — vedi `src/instrumentation.ts` e `src/instrumentation-client.ts`. `NEXT_PUBLIC_SENTRY_DSN` va iniettato come **build-arg** del Dockerfile (si inlinea nel bundle client durante `next build`, non basta come variabile a runtime); `SENTRY_DSN` invece è letto dal server a runtime, quindi basta come variabile del servizio Railway.
+
+Verificato con un evento reale, non solo "dovrebbe arrivare": chiamata `GET /api/debug/trigger-error` (ruota di solo-debug che lancia un errore a proposito) sull'URL pubblica, evento apparso nella dashboard di Sentry come issue `APERTA-1`, correttamente taggato "Unhandled" e con la rotta esatta.
+
+**Interpretare gli alert**: un'issue "Unhandled" in Sentry è un'eccezione non gestita da nessun try/catch — indica un bug reale da correggere, non un errore atteso (es. una validazione fallita che l'app già gestisce con una risposta 400 non genera un'issue). Il campo "Events" conta quante volte si è ripetuto; "Users" quanti utenti diversi lo hanno incontrato.
+
+**Uptime: UptimeRobot** — da configurare, monitorando `https://aperta-production.up.railway.app`.
