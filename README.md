@@ -60,8 +60,8 @@ Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOp
 
 - [x] Esplorazione e pianificazione (questa sezione)
 - [x] Containerizzazione (Dockerfile, docker-compose, verifica avvio locale)
-- [ ] Sicurezza e gestione secret (.env, GitHub Secrets)
-- [ ] Pipeline CI (lint + build container ad ogni push)
+- [~] Sicurezza e gestione secret (.env.example pronto; verifica "nessun secret nei log" si completa quando esisteranno secret reali, nei passi CD/Monitoraggio)
+- [x] Pipeline CI (lint + build container ad ogni push)
 - [ ] Pipeline CD e deploy pubblico su Railway
 - [ ] Monitoraggio (Sentry + UptimeRobot)
 - [ ] Presentazione finale (`docs/pipeline-devops.html`)
@@ -79,3 +79,13 @@ docker compose down            # ferma e rimuove il container (il volume dati re
 ```
 
 Nota tecnica verificata con un run reale (non solo "dovrebbe funzionare"): `@duckdb/node-api` carica un binding nativo (`duckdb.node`) che a sua volta dipende da una libreria dinamica separata (`libduckdb.so`, dynamic linking). Il tracciamento automatico dell'output `standalone` di Next.js copia il primo ma non la seconda — invisibile alla sua analisi statica dei `require()`. Senza una copia esplicita di `node_modules/@duckdb` nel Dockerfile, il container si avvia ma fallisce su ogni richiesta con `libduckdb.so: cannot open shared object file`. Risolto copiando la cartella `@duckdb` completa dal builder nell'immagine runtime.
+
+### Sicurezza e gestione secret
+
+Oggi l'app non richiede nessuna variabile d'ambiente per funzionare in locale — nessuna chiave API, nessuna credenziale. `.env.example` documenta comunque il formato per quelle che introdurranno i prossimi passi (Sentry). Verificato che nessun file `.env` sia mai stato committato nella storia del repository (`git log --all --diff-filter=A -- .env*`, nessun risultato). I secret legati al deploy/CI (token Railway, credenziali Sentry per l'upload delle sourcemap) non vivono in `.env` ma come **GitHub Actions Secrets** — mai nel repository, mascherati automaticamente nei log delle Action.
+
+### Pipeline CI
+
+`.github/workflows/ci-cd.yml`, job `ci`: ad ogni push/PR su `main` — checkout, `npm ci`, lint (`--max-warnings=0`: la config di `eslint-config-next` marca la maggior parte delle regole come warning, non error — senza questo flag la pipeline passerebbe in verde anche con problemi di lint reali), build dell'immagine Docker.
+
+Verificato con un run reale, non solo "dovrebbe fallire": rotto di proposito un lint (`unusedTestVar` inutilizzato), push, pipeline fallita in rosso con l'annotazione sulla riga esatta ([run rosso](https://github.com/RaffaeleBini/Aperta/actions/runs/33653865703)); revertito, pipeline tornata verde ([run verde](https://github.com/RaffaeleBini/Aperta/actions/runs/33653945161)).
