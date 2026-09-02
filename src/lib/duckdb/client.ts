@@ -9,6 +9,7 @@ const WAL_PATH = `${DB_PATH}.wal`;
 
 const globalForDuckDB = globalThis as unknown as {
   aperta_duckdb_conn?: Promise<DuckDBConnection>;
+  aperta_shutdown_registered?: boolean;
 };
 
 /**
@@ -43,8 +44,39 @@ async function createConnection(): Promise<DuckDBConnection> {
 export function getConnection(): Promise<DuckDBConnection> {
   if (!globalForDuckDB.aperta_duckdb_conn) {
     globalForDuckDB.aperta_duckdb_conn = createConnection();
+    // Se il connect fallisce senza recupero possibile, non tenere in cache
+    // una promise rifiutata per sempre — un prossimo tentativo riprova da zero.
+    globalForDuckDB.aperta_duckdb_conn.catch(() => {
+      globalForDuckDB.aperta_duckdb_conn = undefined;
+    });
   }
   return globalForDuckDB.aperta_duckdb_conn;
+}
+
+/**
+ * Piattaforme come Railway inviano SIGTERM prima di uccidere il container ad
+ * ogni redeploy. Senza un checkpoint esplicito qui, ogni redeploy lascia un
+ * .wal non consolidato che va rigiocato al prossimo avvio — nella maggior
+ * parte dei casi va bene, ma è proprio la finestra in cui si è osservato in
+ * produzione un fallimento di replay del WAL (vedi createConnection sopra).
+ * Un CHECKPOINT pulito qui riduce drasticamente quella finestra di rischio.
+ */
+async function shutdown() {
+  const pending = globalForDuckDB.aperta_duckdb_conn;
+  if (!pending) return;
+  try {
+    const conn = await pending;
+    await conn.run("CHECKPOINT");
+    conn.closeSync();
+  } catch {
+    // Uscita in corso comunque: un checkpoint fallito qui non deve bloccarla.
+  }
+}
+
+if (!globalForDuckDB.aperta_shutdown_registered) {
+  globalForDuckDB.aperta_shutdown_registered = true;
+  process.once("SIGTERM", () => void shutdown().finally(() => process.exit(0)));
+  process.once("SIGINT", () => void shutdown().finally(() => process.exit(0)));
 }
 
 /** Esegue una query e restituisce le righe come oggetti JSON-safe. */
