@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   // escluso dal bundle server, altrimenti webpack prova a risolvere staticamente
   // tutti i rami dello switch platform/arch e fallisce sulle piattaforme assenti.
   serverExternalPackages: ["@duckdb/node-api", "@duckdb/node-bindings"],
+  // Immagine Docker minimale: copia solo i file necessari a runtime.
+  output: "standalone",
 };
 
 export default withNextIntl(nextConfig);
