@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { listPivotsByDataset } from "@/lib/pivot/pivots";
 import { DeletePivotButton } from "./delete-pivot-button";
 import { ExportPivotLink } from "./export-pivot-link";
+import { ExportPivotNotebookLink } from "./export-pivot-notebook-link";
 import { Button } from "@/components/ui/button";
 import { Plus, Table2 } from "lucide-react";
 
@@ -37,6 +38,7 @@ export async function PivotList({ datasetId }: { datasetId: string }) {
               </Link>
               <div className="flex items-center gap-1">
                 <ExportPivotLink datasetId={datasetId} pivotId={pivot.id} />
+                <ExportPivotNotebookLink datasetId={datasetId} pivotId={pivot.id} />
                 <DeletePivotButton datasetId={datasetId} pivotId={pivot.id} />
               </div>
             </div>

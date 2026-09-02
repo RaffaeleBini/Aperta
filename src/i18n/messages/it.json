@@ -107,6 +107,7 @@
   "charts": {
     "newChart": "Nuevo gráfico",
     "noCharts": "Todavía no se ha creado ningún gráfico.",
+    "exportNotebook": "Descargar notebook de Jupyter",
     "builder": {
       "fields": "Campos",
       "dimensions": "Dimensiones",
@@ -285,6 +286,7 @@
     "newPivot": "Nueva tabla dinámica",
     "noPivots": "Todavía no se ha creado ninguna tabla dinámica.",
     "exportCsv": "Exportar CSV",
+    "exportNotebook": "Descargar notebook de Jupyter",
     "previewSummary": "Vista previa de las primeras {shown} filas.",
     "emptyResult": "La configuración actual no devuelve columnas.",
     "builder": {

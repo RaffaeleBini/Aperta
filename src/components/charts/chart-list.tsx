@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { listChartsByDataset } from "@/lib/charts/charts";
 import { CHART_TYPE_ICONS } from "@/lib/charts/chart-type-icons";
 import { DeleteChartButton } from "./delete-chart-button";
+import { ExportChartNotebookLink } from "./export-chart-notebook-link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
@@ -26,17 +27,22 @@ export async function ChartList({ datasetId }: { datasetId: string }) {
           {charts.map((chart) => {
             const Icon = CHART_TYPE_ICONS[chart.chart_type];
             return (
-              <Link
+              <div
                 key={chart.id}
-                href={`/datasets/${datasetId}/charts/${chart.id}`}
                 className="flex items-center justify-between rounded-md border p-3 hover:bg-accent/10"
               >
-                <div className="flex items-center gap-2">
+                <Link
+                  href={`/datasets/${datasetId}/charts/${chart.id}`}
+                  className="flex items-center gap-2 flex-1"
+                >
                   <Icon className="size-4 text-muted-foreground" />
                   <span className="font-medium">{chart.name}</span>
+                </Link>
+                <div className="flex items-center gap-1">
+                  <ExportChartNotebookLink datasetId={datasetId} chartId={chart.id} />
+                  <DeleteChartButton datasetId={datasetId} chartId={chart.id} />
                 </div>
-                <DeleteChartButton datasetId={datasetId} chartId={chart.id} />
-              </Link>
+              </div>
             );
           })}
         </div>
