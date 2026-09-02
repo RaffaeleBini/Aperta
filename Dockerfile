@@ -8,6 +8,12 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
+
+# NEXT_PUBLIC_* si inietta staticamente nel bundle client durante `next build`
+# — a differenza di SENTRY_DSN (letto a runtime dal server), questa deve
+# esistere già in fase di build, non solo come variabile del servizio.
+ARG NEXT_PUBLIC_SENTRY_DSN
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 RUN npm run build
 
 FROM node:22-slim AS runtime
