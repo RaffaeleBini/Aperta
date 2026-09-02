@@ -10,5 +10,3 @@ export function rowsToCsv(columns: string[], rows: Record<string, unknown>[]): s
   const lines = rows.map((row) => columns.map((c) => escapeCsvValue(row[c])).join(","));
   return [header, ...lines].join("\r\n");
 }
-
-const unusedTestVar = 123;
