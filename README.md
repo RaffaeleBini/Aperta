@@ -41,6 +41,8 @@ Il file `data/aperta.duckdb` contiene sia i dati importati che tutti i metadati 
 
 Obiettivo: portare Aperta da "gira in locale con `npm run dev`" a un ciclo DevOps completo — container, CI/CD automatica, deploy pubblico, gestione dei secret e monitoraggio — mantenendo intatta la premessa architetturale dell'app (un solo file DuckDB, nessuna dipendenza cloud obbligatoria per l'uso locale).
 
+> **Deploy pubblico decommissionato il 2026-09-04.** Il deploy su Railway serviva per una prova d'esame ormai superata; da oggi Aperta torna a girare solo in locale. Il job `deploy` è stato rimosso da `.github/workflows/ci-cd.yml` (resta solo `ci`: lint + build immagine) e il secret `RAILWAY_TOKEN` è stato eliminato dal repository GitHub. Il progetto Railway è stato eliminato dalla dashboard — verificato: `railway status` risponde "Project is deleted" e l'URL pubblica risponde `404` — e il monitor UptimeRobot è stato messo in pausa. Le sezioni sotto restano come documentazione di com'era configurata la pipeline — utile riferimento se in futuro si volesse ripubblicare l'app.
+
 ### I 3 ambienti
 
 | Ambiente | Dove gira | Come si aggiorna |
